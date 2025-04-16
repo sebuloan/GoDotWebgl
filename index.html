@@ -137,6 +137,18 @@ const engine = new Engine(GODOT_CONFIG);
 		statusNotice.style.display = mode === 'notice' ? 'block' : 'none';
 		statusMode = mode;
 	}
+	  if (message.type === 'callUnityFunction') {
+        const data = message.data; // This is the serialized JSON string
+
+        // Parse the JSON data into a JavaScript object
+        const parsedData = JSON.parse(data);
+
+        // Assuming 'unityInstance' is your Unity WebGL instance
+        if (unityInstance) {
+            // Send the parsed data to Unity's 'InitializeSystem' function
+            unityInstance.SendMessage('WebGLCommunication', 'InitializeSystem', JSON.stringify(parsedData));
+        }
+    }
 
 	function setStatusNotice(text) {
 		while (statusNotice.lastChild) {
