@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>WebGL Project Home</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <style>
+      /* Ensure the body and html elements take up the full viewport */
+      html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+      }
+
+      /* Style for the blue button */
+      #unityButton {
+        background-color: blue;
+        color: white;
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+        margin: 20px;
+      }
+
+      /* Make the iframe fill the entire screen */
+      iframe {
+        border: none; /* Remove the iframe border */
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- The button that will change color -->
+    <button id="unityButton" onclick="callUnityFunction()">Send JSonData</button>
+
+
+     <div id="responseDisplay" style="font-size: 18px; margin-top: 20px;">Waiting for Unity response...</div>
+
+    <!-- The Unity WebGL build embedded as an iframe -->
+    <iframe id="unityIframe" src="https://sebuloan.github.io/Webgl/index.html"></iframe>
+
+    <script>
+  
+      // JSON data to be serialized and sent to Unity
+      const jsonData = {
+        component: "A",
+        connector: 1,
+        system: "car frame"
+      };
+
+      // Function to send serialized JSON data to Unity when the HTML button is clicked
+      function callUnityFunction() {
+        const iframe = document.getElementById('unityIframe');
+        const messageData = {
+          type: 'callUnityFunction',
+          data: JSON.stringify(jsonData) // Serialize the JSON data into a string
+        };
+        iframe.contentWindow.postMessage(messageData, '*');
+      }
+
+
+     function receiveDataFromChild(jsonResponse) {
+    // Deserialize the JSON response from Unity
+    const responseData = JSON.parse(jsonResponse);
+    // Display the received data in the HTML page
+    const responseDisplay = document.getElementById('responseDisplay');
+    responseDisplay.innerHTML = 
+      `Component: ${responseData.component}<br>
+       Connector: ${responseData.connector}<br>
+       System: ${responseData.system}`;
+}
+
+      // Listen for messages from Unity
+      window.addEventListener('message', function(event) {
+        const message = event.data;
+
+         if (message.type === 'UnityData') {
+            console.log("Received data from Unity:", message.data);
+            // Call the function to display the data from Unity
+            receiveDataFromChild(JSON.stringify(message.data)); // Make sure to pass the JSON string
+        }
+      });
+    </script>
+
+    <footer>
+      <p>&copy; 2024 WebGL Project by Sebuloan</p>
+    </footer>
+
+  </body>
+</html>
