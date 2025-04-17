@@ -26,13 +26,13 @@
       position: absolute;
     }
 
-    #responseDisplay {
+    #statusMessage {
       font-size: 18px;
       margin: 80px 20px 20px 20px;
       position: absolute;
       z-index: 2;
-      background-color: rgba(255, 255, 255, 0.1);
-      color: white;
+      background-color: rgba(255, 255, 255, 0.9);
+      color: black;
       padding: 10px;
       border-radius: 5px;
     }
@@ -64,6 +64,9 @@
   <!-- Button to send JSON data to Godot -->
   <button id="godotButton" onclick="callGodotFunction()">Send JSON Data</button>
 
+  <!-- Message area to show status -->
+  <div id="statusMessage"></div>
+
   <!-- Godot WebGL build -->
   <iframe id="godotIframe" src="https://sebuloan.github.io/GoDotWebgl/index.html"></iframe>
 
@@ -83,6 +86,10 @@
         data: JSON.stringify(jsonData)
       };
       iframe.contentWindow.postMessage(messageData, '*');
+
+      // Display status message
+      const statusDiv = document.getElementById('statusMessage');
+      statusDiv.textContent = '✅ Message sent to Godot! index file';
     }
   </script>
 
