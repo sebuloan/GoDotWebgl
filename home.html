@@ -82,7 +82,7 @@
     function callGodotFunction() {
       const iframe = document.getElementById('godotIframe');
       const messageData = {
-        type: 'callUnityFunction', // Must match what Godot listens for
+        type: 'callGodoFunction', // Must match what Godot listens for
         data: JSON.stringify(jsonData)
       };
       iframe.contentWindow.postMessage(messageData, '*');
