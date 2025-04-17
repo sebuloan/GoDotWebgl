@@ -87,23 +87,7 @@
       };
       iframe.contentWindow.postMessage(messageData, '*');
     }
-
-    // Receive message from Godot and display it
-    function receiveDataFromChild(responseData) {
-      const responseDisplay = document.getElementById('responseDisplay');
-      responseDisplay.innerHTML =
-        `Component: ${responseData.component}<br>
-         Connector: ${responseData.connector}<br>
-         System: ${responseData.system}`;
-    }
-
-    // Listen for message from Godot
-    window.addEventListener('message', function(event) {
-      const message = event.data;
-      if (message.type === 'UnityData') {
-        console.log("Received data from Godot:", message.data);
-        receiveDataFromChild(message.data);
-      }
+  
     });
   </script>
 
