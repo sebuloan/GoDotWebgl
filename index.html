@@ -244,19 +244,24 @@
     }());
 
     // Listen for JSON data from parent
-    window.addEventListener("message", function (event) {
-      if (event.data && event.data.type === "callGodoFunctioninIndex") {
-        try {
-          const receivedData = JSON.parse(event.data.data);
-          console.log("Received JSON Data:", receivedData);
+   window.addEventListener("message", function (event) {
+  if (event.data && event.data.type === "callGodoFunctioninIndex") {
+    try {
+      const jsonString = event.data.data;
+      console.log("Received JSON from parent:", jsonString);
 
-          const displayDiv = document.getElementById("jsonDisplay");
-          displayDiv.innerText = "Received JSON:\n" + JSON.stringify(receivedData, null, 2);
-        } catch (err) {
-          console.error("Invalid JSON received:", err);
-        }
-      }
-    });
+      const displayDiv = document.getElementById("jsonDisplay");
+      displayDiv.innerText = "Received JSON:\n" + JSON.stringify(JSON.parse(jsonString), null, 2);
+
+      // Call GDScript method with JSON
+      engine.call("WebGLCommunication.initialize_system", jsonString);
+ // <-- Calls the GDScript method
+
+    } catch (err) {
+      console.error("Invalid JSON received:", err);
+    }
+  }
+});
   </script>
 </body>
 </html>
