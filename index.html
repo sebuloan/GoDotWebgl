@@ -122,7 +122,9 @@
 
     const GODOT_THREADS_ENABLED = false;
     const engine = new Engine(GODOT_CONFIG);
+
     let godotInstance = null;
+    let messageQueue = [];
 
     (function () {
       const statusOverlay = document.getElementById('status');
@@ -194,22 +196,32 @@
         }).then((engineInstance) => {
           godotInstance = engineInstance;
           setStatusMode('hidden');
+
+          // ✅ Process queued messages
+          messageQueue.forEach((data) => {
+            godotInstance.call('WebGLCommunication', 'initialize_system', JSON.stringify(data));
+          });
+          messageQueue = [];
         }, displayFailureNotice);
       }
     }());
 
-    // PostMessage listener from home.html
+    // ✅ Queueing incoming messages until Godot is ready
     window.addEventListener('message', function (event) {
       const message = event.data;
 
       if (message.type === 'callUnityFunction') {
-        const parsedData = JSON.parse(message.data);
+        try {
+          const parsedData = JSON.parse(message.data);
 
-        if (godotInstance) {
-          // Send message to Godot's "WebGLCommunication" node and call "initialize_system"
-          godotInstance.call('WebGLCommunication', 'initialize_system', JSON.stringify(parsedData));
-        } else {
-          console.warn("Godot instance not ready yet.");
+          if (godotInstance) {
+            godotInstance.call('WebGLCommunication', 'initialize_system', JSON.stringify(parsedData));
+          } else {
+            console.warn("Godot instance not ready yet, queueing message.");
+            messageQueue.push(parsedData);
+          }
+        } catch (err) {
+          console.error("Invalid JSON message received:", message.data, err);
         }
       }
     });
