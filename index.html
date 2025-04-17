@@ -135,7 +135,7 @@
       let statusMode = '';
 
        // ✅ Queueing incoming messages until Godot is ready
-    window.addEventListener('message', function (event) {
+    window.addEventListener('messageData', function (event) {
       const message = event.data;
 
       if (message.type === 'callGodoFunctioninIndex') {
