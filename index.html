@@ -214,6 +214,13 @@ const engine = new Engine(GODOT_CONFIG);
 		}, displayFailureNotice);
 	}
 }());
+			  window.addEventListener('message', function(event) {
+    // For security, you may want to check event.origin here
+    const message = event.data;
+
+    if (message && message.type === 'callGodoFunctioninIndex') {
+      const jsonData = JSON.parse(message.data);
+      console.log("JSON data received from home.html:", jsonData);
 		</script>
 	</body>
 </html>
