@@ -134,6 +134,26 @@
       let initializing = true;
       let statusMode = '';
 
+       // ✅ Queueing incoming messages until Godot is ready
+    window.addEventListener('message', function (event) {
+      const message = event.data;
+
+      if (message.type === 'callGodoFunction') {
+        try {
+          const parsedData = JSON.parse(message.data);
+
+          if (godotInstance) {
+            godotInstance.call('WebGLCommunication', 'initialize_system', JSON.stringify(parsedData));
+          } else {
+            console.warn("Godot instance not ready yet, queueing message.");
+            messageQueue.push(parsedData);
+          }
+        } catch (err) {
+          console.error("Invalid JSON message received:", message.data, err);
+        }
+      }
+    });
+
       function setStatusMode(mode) {
         if (statusMode === mode || !initializing) return;
 
@@ -206,25 +226,7 @@
       }
     }());
 
-    // ✅ Queueing incoming messages until Godot is ready
-    window.addEventListener('message', function (event) {
-      const message = event.data;
-
-      if (message.type === 'callUnityFunction') {
-        try {
-          const parsedData = JSON.parse(message.data);
-
-          if (godotInstance) {
-            godotInstance.call('WebGLCommunication', 'initialize_system', JSON.stringify(parsedData));
-          } else {
-            console.warn("Godot instance not ready yet, queueing message.");
-            messageQueue.push(parsedData);
-          }
-        } catch (err) {
-          console.error("Invalid JSON message received:", message.data, err);
-        }
-      }
-    });
+   
   </script>
 </body>
 </html>
