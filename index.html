@@ -137,18 +137,28 @@ const engine = new Engine(GODOT_CONFIG);
 		statusNotice.style.display = mode === 'notice' ? 'block' : 'none';
 		statusMode = mode;
 	}
-	  if (message.type === 'callUnityFunction') {
-        const data = message.data; // This is the serialized JSON string
+	 <script>
+  let godotInstance;
 
-        // Parse the JSON data into a JavaScript object
-        const parsedData = JSON.parse(data);
+  window.addEventListener('message', function (event) {
+    const message = event.data;
 
-        // Assuming 'unityInstance' is your Unity WebGL instance
-        if (unityInstance) {
-            // Send the parsed data to Unity's 'InitializeSystem' function
-            unityInstance.SendMessage('WebGLCommunication', 'InitializeSystem', JSON.stringify(parsedData));
-        }
+    if (message.type === 'callUnityFunction') {
+      const parsedData = JSON.parse(message.data);
+
+      // Call the method exposed by Godot
+      if (godotInstance) {
+        godotInstance.call('WebGLCommunication', 'initialize_system', JSON.stringify(parsedData));
+      }
     }
+  });
+
+  // Assuming you're using Godot 4's exported loader
+  createEngine().then((engine) => {
+    godotInstance = engine;
+  });
+</script>
+
 
 	function setStatusNotice(text) {
 		while (statusNotice.lastChild) {
