@@ -79,13 +79,11 @@
     function callGodotFunction() {
       const iframe = document.getElementById('godotIframe');
       const messageData = {
-        type: 'callGodoFunctioninIndex', // Must match what Godot listens for
+        type: 'callGodoFunctioninIndex',
         data: JSON.stringify(jsonData)
       };
       iframe.contentWindow.postMessage(messageData, '*');
     }
-  
-    });
   </script>
 
   <footer>
