@@ -215,6 +215,28 @@ const engine = new Engine(GODOT_CONFIG);
 	}
 }());
 		</script>
+		<script>
+  let godotInstance;
+
+  window.addEventListener('message', function (event) {
+    const message = event.data;
+
+    if (message.type === 'callUnityFunction') {
+      const parsedData = JSON.parse(message.data);
+
+      // Call the method exposed by Godot
+      if (godotInstance) {
+        godotInstance.call('WebGLCommunication', 'initialize_system', JSON.stringify(parsedData));
+      }
+    }
+  });
+
+  // Assuming you're using Godot 4's exported loader
+  createEngine().then((engine) => {
+    godotInstance = engine;
+  });
+</script>
+
 	</body>
 </html>
 
