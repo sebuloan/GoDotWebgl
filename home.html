@@ -1,101 +1,29 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Godot WebGL Home</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      width: 100%;
-    }
-
-    #godotButton {
-      background-color: blue;
-      color: white;
-      padding: 10px 20px;
-      font-size: 16px;
-      border: none;
-      cursor: pointer;
-      margin: 20px;
-      z-index: 2;
-      position: absolute;
-    }
-
-    #statusMessage {
-      font-size: 18px;
-      margin: 80px 20px 20px 20px;
-      position: absolute;
-      z-index: 2;
-      background-color: rgba(255, 255, 255, 0.9);
-      color: black;
-      padding: 10px;
-      border-radius: 5px;
-    }
-
-    iframe {
-      border: none;
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 1;
-    }
-
-    footer {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      text-align: center;
-      background-color: black;
-      color: white;
-      padding: 10px;
-      z-index: 2;
-    }
-  </style>
+    <title>Godot 4.4 WebGL Communication</title>
 </head>
 <body>
+    <button id="godotButton" onclick="callGodotFunction()">Send JSON Data</button>
+    <div id="statusMessage"></div>
+    <iframe id="godotIframe" src="https://sebuloan.github.io/GoDotWebgl/index.html"></iframe>
 
-  <!-- Button to send JSON data to Godot -->
-  <button id="godotButton" onclick="callGodotFunction()">Send JSON Data</button>
+    <script>
+        const jsonData = {
+            component: "A",
+            connector: 1,
+            system: "car frame"
+        };
 
-  <!-- Message area to show status -->
-  <div id="statusMessage"></div>
-
-  <!-- Godot WebGL build -->
-  <iframe id="godotIframe" src="https://sebuloan.github.io/GoDotWebgl/index.html"></iframe>
-
-  <script>
-    // JSON data to send to Godot
-    const jsonData = {
-      component: "A",
-      connector: 1,
-      system: "car frame"
-    };
-
-    // Send message to Godot WebGL iframe
-    function callGodotFunction() {
-      const iframe = document.getElementById('godotIframe');
-      const messageData = {
-        type: 'callGodoFunctioninIndex',
-        data: JSON.stringify(jsonData)
-      };
-      iframe.contentWindow.postMessage(messageData, '*');
-
-      // Display status message
-      const statusDiv = document.getElementById('statusMessage');
-      statusDiv.textContent = '✅ Message sent to Godot! index file';
-    }
-  </script>
-
-  <footer>
-    <p>&copy; 2024 Godot WebGL Project by Sebuloan</p>
-  </footer>
-
+        function callGodotFunction() {
+            const iframe = document.getElementById('godotIframe');
+            iframe.contentWindow.postMessage({
+                type: 'callGodoFunctioninIndex',
+                data: JSON.stringify(jsonData)
+            }, '*');
+            
+            document.getElementById('statusMessage').textContent = '✅ Message sent to Godot!';
+        }
+    </script>
 </body>
 </html>
