@@ -1,34 +1,21 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Godot 4.4 WebGL</title>
-    <style>
-        #godotIframe { 
-            width: 800px; 
-            height: 600px;
-            border: 1px solid #ccc;
-        }
-    </style>
-</head>
 <body>
-    <button id="godotButton">Send JSON Data</button>
-    <div id="status"></div>
-    <iframe id="godotIframe" src="https://sebuloan.github.io/GoDotWebgl/index.html"></iframe>
+    <button onclick="sendToGodot()">Send Data</button>
+    <iframe id="godotFrame" src="https://sebuloan.github.io/GoDotWebgl/index.html"></iframe>
 
     <script>
-        document.getElementById('godotButton').addEventListener('click', () => {
-            const iframe = document.getElementById('godotIframe');
+        function sendToGodot() {
+            const iframe = document.getElementById("godotFrame");
             iframe.contentWindow.postMessage({
-                type: 'callGodoFunctioninIndex',
+                type: "callGodoFunctioninIndex",
                 data: JSON.stringify({
                     Component: "A",
                     Connector: 1,
                     System: "car frame"
                 })
-            }, '*');
-            
-            document.getElementById('status').textContent = "Data sent!";
-        });
+            }, "*");
+        }
     </script>
 </body>
 </html>
