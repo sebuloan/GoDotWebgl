@@ -1,29 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Godot 4.4 WebGL Communication</title>
+    <title>Godot 4.4 WebGL</title>
+    <style>
+        #godotIframe { 
+            width: 800px; 
+            height: 600px;
+            border: 1px solid #ccc;
+        }
+    </style>
 </head>
 <body>
-    <button id="godotButton" onclick="callGodotFunction()">Send JSON Data</button>
-    <div id="statusMessage"></div>
+    <button id="godotButton">Send JSON Data</button>
+    <div id="status"></div>
     <iframe id="godotIframe" src="https://sebuloan.github.io/GoDotWebgl/index.html"></iframe>
 
     <script>
-        const jsonData = {
-            component: "A",
-            connector: 1,
-            system: "car frame"
-        };
-
-        function callGodotFunction() {
+        document.getElementById('godotButton').addEventListener('click', () => {
             const iframe = document.getElementById('godotIframe');
             iframe.contentWindow.postMessage({
                 type: 'callGodoFunctioninIndex',
-                data: JSON.stringify(jsonData)
+                data: JSON.stringify({
+                    Component: "A",
+                    Connector: 1,
+                    System: "car frame"
+                })
             }, '*');
             
-            document.getElementById('statusMessage').textContent = '✅ Message sent to Godot!';
-        }
+            document.getElementById('status').textContent = "Data sent!";
+        });
     </script>
 </body>
 </html>
