@@ -214,6 +214,23 @@ const engine = new Engine(GODOT_CONFIG);
 		}, displayFailureNotice);
 	}
 }());
+	window.addEventListener("message", function (event) {
+    if (event.data?.type === "callGodoFunctioninIndex") {
+        try {
+            const jsonString = event.data.data;
+            console.log("Received JSON:", jsonString);
+            
+            // Godot 4.4 specific call
+            if (typeof godotWebgl !== 'undefined') {
+                godotWebgl.engine.call("WebGLCommunication.initialize_system", jsonString);
+            } else {
+                console.error("Godot engine not available");
+            }
+        } catch (err) {
+            console.error("Error:", err);
+        }
+    }
+});
 		</script>
 	</body>
 </html>
