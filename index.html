@@ -111,7 +111,7 @@ body {
 
 		<script src="index.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":7424,"index.wasm":43682606},"focusCanvas":true,"gdextensionLibs":[]};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":34560,"index.wasm":1625538},"focusCanvas":true,"gdextensionLibs":[]};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
@@ -214,23 +214,6 @@ const engine = new Engine(GODOT_CONFIG);
 		}, displayFailureNotice);
 	}
 }());
-window.addEventListener("message", (event) => {
-    if (event.data?.type === "callGodoFunctioninIndex") {
-        if (typeof godotWebgl !== 'undefined') {
-            godotWebgl.engine.call("WebGL/initialize_system", event.data.data);
-        } else {
-            console.log("Godot engine loading... retrying in 500ms");
-            setTimeout(() => {
-                godotWebgl?.engine.call("WebGL/initialize_system", event.data.data);
-            }, 500);
-        }
-    }
-});
-
-// Fix for AudioContext warning
-document.addEventListener('click', () => {
-    godotWebgl?.audioContext?.resume();
-}, { once: true });
 		</script>
 	</body>
 </html>
