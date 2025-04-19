@@ -95,6 +95,7 @@ body {
 
 	</head>
 	<body>
+		<div id="jsonDisplay" style="margin: 10px; padding: 10px; border: 1px solid #ccc;"></div>
 		<canvas id="canvas">
 			Your browser does not support the canvas tag.
 		</canvas>
@@ -214,21 +215,25 @@ const engine = new Engine(GODOT_CONFIG);
 		}, displayFailureNotice);
 	}
 }());// Listen for JSON data from parent
-  window.addEventListener("message", function (event) {
+ window.addEventListener("message", function (event) {
   if (event.data && event.data.type === "callGodoFunctioninIndex") {
     try {
       const jsonString = event.data.data;
       console.log("Received JSON from parent:", jsonString);
-
-      const displayDiv = document.getElementById("jsonDisplay");
+      
+      // Safely handle display div
+      const displayDiv = document.getElementById("jsonDisplay") || document.createElement("div");
       displayDiv.innerText = "Received JSON:\n" + JSON.stringify(JSON.parse(jsonString), null, 2);
-
-      // Call GDScript method with JSON
-      engine.call("WebGLCommunication.initialize_system", jsonString);
- // <-- Calls the GDScript method
+      
+      // Call GDScript method
+      if (typeof engine !== 'undefined') {
+        engine.call("WebGLCommunication.initialize_system", jsonString);
+      } else {
+        console.error("Godot engine not available");
+      }
 
     } catch (err) {
-      console.error("Invalid JSON received:", err);
+      console.error("Error processing message:", err);
     }
   }
 });
