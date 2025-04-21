@@ -11,11 +11,12 @@
     <iframe id="godotFrame" src="https://sebuloan.github.io/GoDotWebgl/index.html" width="800" height="600" allow="fullscreen"></iframe>
 
     <script>
-        function disableCube() {
-            const iframe = document.getElementById('godotFrame');
-            console.log("🧲 Sending message to iframe: disable-cube");
-            iframe.contentWindow.postMessage("disable-cube", "*");
-        }
+       function disableCube() {
+	const iframe = document.getElementById("godotFrame");
+	console.log("📤 Sending 'disable-cube' to iframe");
+	iframe.contentWindow.postMessage("disable-cube", "*");
+}
+
         </script>
         
 </body>

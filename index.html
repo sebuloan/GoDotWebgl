@@ -111,7 +111,7 @@ body {
 
 		<script src="index.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":11744,"index.wasm":43682606},"focusCanvas":true,"gdextensionLibs":[]};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":35760,"index.wasm":43682606},"focusCanvas":true,"gdextensionLibs":[]};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
@@ -214,32 +214,6 @@ const engine = new Engine(GODOT_CONFIG);
 		}, displayFailureNotice);
 	}
 }());
-let pendingMessage = null;
-
-window.addEventListener("message", function (event) {
-	console.log("📥 Message received in iframe:", event.data);
-
-	if (event.data === "disable-cube") {
-		pendingMessage = event.data;
-		tryToSendToGodot();
-		console.log("message received and calling function");
-	}
-	
-});
-
-function tryToSendToGodot() {
-	console.log("message received and called function");
-	if (typeof GodotRuntime !== "undefined" || typeof GodotRuntime.callMain === "function") {
-		console.log("✅ GodotRuntime ready, sending message...");
-		GodotRuntime.callMain("js_message", pendingMessage);
-		pendingMessage = null;
-	} else {
-		console.log("⏳ Waiting for GodotRuntime...");
-		setTimeout(tryToSendToGodot, 500);
-	}
-}
-
-
 		</script>
 	</body>
 </html>
