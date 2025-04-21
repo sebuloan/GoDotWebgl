@@ -111,7 +111,7 @@ body {
 
 		<script src="index.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":10512,"index.wasm":1625538},"focusCanvas":true,"gdextensionLibs":[]};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":34528,"index.wasm":1625538},"focusCanvas":true,"gdextensionLibs":[]};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
@@ -232,15 +232,17 @@ function handleMessage(event) {
 }
 
 window.addEventListener('message', handleMessage, false);
-
 function flushPendingMessages() {
+    console.log("Godot is ready. Flushing messages...");
     if (window.pendingMessages && typeof godot !== 'undefined' && godot.instance) {
         while (window.pendingMessages.length > 0) {
             const msg = window.pendingMessages.shift();
+            console.log("Delivering stored message to Godot:", msg);
             godot.instance.call("/root/Main/MessageReceiver._receive_message", JSON.stringify(msg));
         }
     }
 }
+
 
 // Wait for Godot to be ready
 window.addEventListener("godot-loaded", flushPendingMessages);
