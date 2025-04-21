@@ -215,51 +215,58 @@ const engine = new Engine(GODOT_CONFIG);
 	}
 }());
 
-function handleMessage(event) {
-    // Security check
-    if (event.origin !== "https://sebuloan.github.io") return;
+  function handleMessage(event) {
+            // Security check: Only accept messages from the specific origin
+            if (event.origin !== "https://sebuloan.github.io") return;
 
-    try {
-        if (typeof godot !== 'undefined' && godot.instance) {
-            godot.instance.call("/root/Main/MessageReceiver._receive_message", JSON.stringify(event.data));
-        } else {
-            console.log("Godot engine not ready. Storing message.");
-            window.pendingMessages = window.pendingMessages || [];
-            window.pendingMessages.push(event.data);
+            try {
+                if (typeof godot !== 'undefined' && godot.instance) {
+                    // If Godot is ready, forward the message
+                    godot.instance.call("/root/Main/MessageReceiver._receive_message", JSON.stringify(event.data));
+                } else {
+                    // Store the message if Godot isn't ready
+                    console.log("Godot engine not ready. Storing message.");
+                    window.pendingMessages = window.pendingMessages || [];
+                    window.pendingMessages.push(event.data);
+                }
+            } catch (e) {
+                console.error("Error forwarding message to Godot:", e);
+            }
         }
-    } catch (e) {
-        console.error("Error forwarding message to Godot:", e);
-    }
-}
 
-window.addEventListener('message', handleMessage, false);
-function flushPendingMessages() {
-    console.log("Godot is ready. Flushing messages...");
-    if (window.pendingMessages && typeof godot !== 'undefined' && godot.instance) {
-        while (window.pendingMessages.length > 0) {
-            const msg = window.pendingMessages.shift();
-            console.log("Delivering stored message to Godot:", msg);
-            godot.instance.call("/root/Main/MessageReceiver._receive_message", JSON.stringify(msg));
+        window.addEventListener('message', handleMessage, false);
+
+        // Function to flush pending messages when Godot is ready
+        function flushPendingMessages() {
+            console.log("Godot is ready. Flushing messages...");
+            if (window.pendingMessages && typeof godot !== 'undefined' && godot.instance) {
+                // Deliver all pending messages to Godot
+                while (window.pendingMessages.length > 0) {
+                    const msg = window.pendingMessages.shift();
+                    console.log("Delivering stored message to Godot:", msg);
+                    godot.instance.call("/root/Main/MessageReceiver._receive_message", JSON.stringify(msg));
+                }
+            }
         }
-    }
-}
 
-window.godot = window.godot || {};
-window.godot.MessageReceiver = {
-	receiveMessage: function(message) {
-		if (typeof godot !== 'undefined' && godot.instance) {
-			console.log("✅ Forwarding message to Godot:", message);
-			godot.instance.call("MessageReceiver._receive_message", message); // No full path needed
-		} else {
-			console.warn("⚠️ Godot instance not ready.");
-		}
-	}
-};
+        // Expose a method to send messages to Godot
+        window.godot = window.godot || {};
+        window.godot.MessageReceiver = {
+            receiveMessage: function(message) {
+                if (typeof godot !== 'undefined' && godot.instance) {
+                    console.log("✅ Forwarding message to Godot:", message);
+                    godot.instance.call("MessageReceiver._receive_message", message); // No full path needed
+                } else {
+                    console.warn("⚠️ Godot instance not ready.");
+                }
+            }
+        };
 
-
-
-// Wait for Godot to be ready
-window.addEventListener("godot-loaded", flushPendingMessages);
+        // Wait for Godot to be ready, then flush pending messages
+        window.addEventListener("godot-loaded", function() {
+            console.log("Godot has loaded. Flushing pending messages...");
+            flushPendingMessages();
+        });
 		</script>
 	</body>
 </html>
