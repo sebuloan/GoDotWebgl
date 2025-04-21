@@ -214,6 +214,13 @@ const engine = new Engine(GODOT_CONFIG);
 		}, displayFailureNotice);
 	}
 }());
+			   window.addEventListener("message", function (event) {
+        if (event.data === "disable-cube") {
+            if (typeof GodotRuntime !== "undefined" && GodotRuntime.callMain) {
+                GodotRuntime.callMain("js_message", event.data);
+            }
+        }
+    });
 		</script>
 	</body>
 </html>
