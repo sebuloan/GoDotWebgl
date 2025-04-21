@@ -111,7 +111,7 @@ body {
 
 		<script src="index.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":35856,"index.wasm":43682606},"focusCanvas":true,"gdextensionLibs":[]};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":35952,"index.wasm":43682606},"focusCanvas":true,"gdextensionLibs":[]};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
@@ -214,12 +214,13 @@ const engine = new Engine(GODOT_CONFIG);
 		}, displayFailureNotice);
 	}
 }());
-window.addEventListener("message", async function (event) {
+window.addEventListener("message", async (event) => {
 	console.log("📥 JS received message:", event.data);
+	
 	if (event.data === "disable-cube") {
 		try {
-			await Godot.invoke('js_message', event.data);
-			console.log("📤 Message sent to Godot!");
+			await window.godotReceiveMessage(event.data);
+			console.log("📤 Message sent to Godot successfully!");
 		} catch (e) {
 			console.error("❌ Failed to call Godot function:", e);
 		}
