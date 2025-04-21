@@ -222,8 +222,9 @@ window.addEventListener("message", function (event) {
 	if (event.data === "disable-cube") {
 		pendingMessage = event.data;
 		tryToSendToGodot();
+		console.log("message received and calling function");
 	}
-	console.log("message received and calling function");
+	
 });
 
 function tryToSendToGodot() {
