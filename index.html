@@ -111,7 +111,7 @@ body {
 
 		<script src="index.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":34528,"index.wasm":1625538},"focusCanvas":true,"gdextensionLibs":[]};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":10784,"index.wasm":1625538},"focusCanvas":true,"gdextensionLibs":[]};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
@@ -214,6 +214,7 @@ const engine = new Engine(GODOT_CONFIG);
 		}, displayFailureNotice);
 	}
 }());
+
 function handleMessage(event) {
     // Security check
     if (event.origin !== "https://sebuloan.github.io") return;
@@ -242,6 +243,19 @@ function flushPendingMessages() {
         }
     }
 }
+
+window.godot = window.godot || {};
+window.godot.MessageReceiver = {
+	receiveMessage: function(message) {
+		if (typeof godot !== 'undefined' && godot.instance) {
+			console.log("✅ Forwarding message to Godot:", message);
+			godot.instance.call("MessageReceiver._receive_message", message); // No full path needed
+		} else {
+			console.warn("⚠️ Godot instance not ready.");
+		}
+	}
+};
+
 
 
 // Wait for Godot to be ready
