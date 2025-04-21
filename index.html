@@ -111,7 +111,7 @@ body {
 
 		<script src="index.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":10512,"index.wasm":1625538},"focusCanvas":true,"gdextensionLibs":[]};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":11520,"index.wasm":1625538},"focusCanvas":true,"gdextensionLibs":[]};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
@@ -214,40 +214,6 @@ const engine = new Engine(GODOT_CONFIG);
 		}, displayFailureNotice);
 	}
 }());
-
-function handleMessage(event) {
-    // Security check - adjust if needed
-    if (event.origin !== "https://sebuloan.github.io") return;
-    
-    console.log("Received message:", event.data);
-    
-    try {
-        if (typeof godot !== 'undefined' && godot.instance) {
-            // Call the singleton directly by its name
-            godot.instance.call("MessageReceiver._receive_message", JSON.stringify(event.data));
-        } else {
-            console.log("Godot not ready, storing message");
-            window.pendingMessages = window.pendingMessages || [];
-            window.pendingMessages.push(event.data);
-        }
-    } catch (e) {
-        console.error("Error forwarding to Godot:", e);
-    }
-}
-
-// Single event listener
-window.addEventListener('message', handleMessage);
-
-// Godot ready handler
-window.addEventListener("godot-loaded", function() {
-    console.log("Godot ready - flushing messages");
-    if (window.pendingMessages && window.pendingMessages.length > 0) {
-        window.pendingMessages.forEach(msg => {
-            godot.instance.call("MessageReceiver._receive_message", JSON.stringify(msg));
-        });
-        window.pendingMessages = [];
-    }
-});
 		</script>
 	</body>
 </html>
