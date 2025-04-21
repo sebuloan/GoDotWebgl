@@ -47,11 +47,11 @@
                 value: 42
             }
         };
-
+    
         document.getElementById('sendJsonBtn').addEventListener('click', () => {
             const controllerFrame = document.getElementById('godot-controller-frame');
             controllerFrame.contentWindow.postMessage(jsonData, 'https://sebuloan.github.io');
-            console.log("Sent JSON to index.html iframe:", jsonData);
+            console.log("Sent JSON to Godot iframe:", jsonData);
         });
     </script>
 </body>
