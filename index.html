@@ -214,26 +214,28 @@ const engine = new Engine(GODOT_CONFIG);
 		}, displayFailureNotice);
 	}
 }());
+let pendingMessage = null;
+
 window.addEventListener("message", function (event) {
 	console.log("📥 Message received in iframe:", event.data);
 
 	if (event.data === "disable-cube") {
-		console.log("🧪 Checking if GodotRuntime exists...");
-
-		if (typeof GodotRuntime !== "undefined") {
-			console.log("✅ GodotRuntime is defined");
-
-			if (typeof GodotRuntime.callMain === "function") {
-				console.log("✅ GodotRuntime.callMain is available");
-				GodotRuntime.callMain("js_message", event.data);
-			} else {
-				console.warn("❌ GodotRuntime.callMain is not a function");
-			}
-		} else {
-			console.warn("❌ GodotRuntime is undefined");
-		}
+		pendingMessage = event.data;
+		tryToSendToGodot();
 	}
 });
+
+function tryToSendToGodot() {
+	if (typeof GodotRuntime !== "undefined" && typeof GodotRuntime.callMain === "function") {
+		console.log("✅ GodotRuntime ready, sending message...");
+		GodotRuntime.callMain("js_message", pendingMessage);
+		pendingMessage = null;
+	} else {
+		console.log("⏳ Waiting for GodotRuntime...");
+		setTimeout(tryToSendToGodot, 500);
+	}
+}
+
 
 		</script>
 	</body>
