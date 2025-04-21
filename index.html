@@ -223,10 +223,11 @@ window.addEventListener("message", function (event) {
 		pendingMessage = event.data;
 		tryToSendToGodot();
 	}
+	console.log("message received and calling function");
 });
 
 function tryToSendToGodot() {
-	if (typeof GodotRuntime !== "undefined" && typeof GodotRuntime.callMain === "function") {
+	if (typeof GodotRuntime !== "undefined" || typeof GodotRuntime.callMain === "function") {
 		console.log("✅ GodotRuntime ready, sending message...");
 		GodotRuntime.callMain("js_message", pendingMessage);
 		pendingMessage = null;
