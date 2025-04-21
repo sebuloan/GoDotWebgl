@@ -261,6 +261,36 @@ const engine = new Engine(GODOT_CONFIG);
                 }
             }
         };
+window.addEventListener('message', handleMessage, false);
+
+function handleMessage(event) {
+    // Security check: Only accept messages from the specific origin
+    if (event.origin !== "https://sebuloan.github.io") return;
+
+    console.log("Received event from iframe:", event);
+
+    try {
+        if (typeof godot !== 'undefined' && godot.instance) {
+            console.log("Godot is ready, sending message...");
+            godot.instance.call("/root/Main/MessageReceiver._receive_message", JSON.stringify(event.data));
+        } else {
+            console.log("Godot engine not ready. Storing message.");
+            window.pendingMessages = window.pendingMessages || [];
+            window.pendingMessages.push(event.data);
+        }
+    } catch (e) {
+        console.error("Error forwarding message to Godot:", e);
+    }
+}
+
+// Check godot instance availability
+setInterval(function() {
+    if (typeof godot !== 'undefined' && godot.instance) {
+        console.log("Godot instance is available.");
+    } else {
+        console.log("Waiting for Godot instance...");
+    }
+}, 1000);
 
         // Wait for Godot to be ready, then flush pending messages
         window.addEventListener("godot-loaded", function() {
