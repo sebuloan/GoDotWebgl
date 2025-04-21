@@ -13,8 +13,10 @@
     <script>
         function disableCube() {
             const iframe = document.getElementById('godotFrame');
+            console.log("🧲 Sending message to iframe: disable-cube");
             iframe.contentWindow.postMessage("disable-cube", "*");
         }
-    </script>
+        </script>
+        
 </body>
 </html>
