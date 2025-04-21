@@ -218,14 +218,23 @@ window.addEventListener("message", function (event) {
 	console.log("📥 Message received in iframe:", event.data);
 
 	if (event.data === "disable-cube") {
-		if (typeof GodotRuntime !== "undefined" && GodotRuntime.callMain) {
-			console.log("📤 Forwarding message to Godot...");
-			GodotRuntime.callMain("js_message", event.data);
+		console.log("🧪 Checking if GodotRuntime exists...");
+
+		if (typeof GodotRuntime !== "undefined") {
+			console.log("✅ GodotRuntime is defined");
+
+			if (typeof GodotRuntime.callMain === "function") {
+				console.log("✅ GodotRuntime.callMain is available");
+				GodotRuntime.callMain("js_message", event.data);
+			} else {
+				console.warn("❌ GodotRuntime.callMain is not a function");
+			}
 		} else {
-			console.warn("❌ GodotRuntime.callMain not available!");
+			console.warn("❌ GodotRuntime is undefined");
 		}
 	}
 });
+
 		</script>
 	</body>
 </html>
