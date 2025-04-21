@@ -214,6 +214,17 @@ const engine = new Engine(GODOT_CONFIG);
 		}, displayFailureNotice);
 	}
 }());
+window.addEventListener("message", async function (event) {
+	console.log("📥 JS received message:", event.data);
+	if (event.data === "disable-cube") {
+		try {
+			await Godot.invoke('js_message', event.data);
+			console.log("📤 Message sent to Godot!");
+		} catch (e) {
+			console.error("❌ Failed to call Godot function:", e);
+		}
+	}
+});
 		</script>
 	</body>
 </html>
