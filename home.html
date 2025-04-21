@@ -1,58 +1,127 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Home - Send JSON to Godot</title>
+    <title>Godot Cube Controller</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             max-width: 1000px;
             margin: 0 auto;
             padding: 20px;
+            background-color: #f5f5f5;
         }
-
-        #godot-controller-frame {
-            width: 100%;
-            height: 800px;
-            border: 2px solid #ccc;
+        .control-panel {
+            background-color: white;
+            padding: 20px;
             border-radius: 8px;
-            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
         }
-
         button {
             padding: 12px 20px;
             font-size: 16px;
-            background-color: #007BFF;
+            background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin-right: 10px;
+            transition: background-color 0.3s;
         }
-
         button:hover {
-            background-color: #0056b3;
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #godot-frame {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background-color: black;
+        }
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
         }
     </style>
 </head>
 <body>
-    <h1>Home Page</h1>
-    <button id="sendJsonBtn">Send JSON to Godot</button>
+    <h1>Godot Cube Controller</h1>
+    
+    <div class="control-panel">
+        <h2>Cube Controls</h2>
+        <button id="disableBtn">Disable Cube</button>
+        <button id="enableBtn">Enable Cube</button>
+        <button id="toggleBtn">Toggle Cube</button>
+        <div id="status" class="status"></div>
+    </div>
 
-    <iframe id="godot-controller-frame" src="https://sebuloan.github.io/GoDotWebgl/index.html" name="godot-controller"></iframe>
+    <iframe id="godot-frame" src="https://sebuloan.github.io/GoDotWebgl/index.html" allow="cross-origin-isolated"></iframe>
 
     <script>
-        const jsonData = {
-            action: "custom",
-            payload: {
-                message: "Hello from home.html",
-                value: 42
+        const godotFrame = document.getElementById('godot-frame');
+        const statusDiv = document.getElementById('status');
+        
+        // Message handler for responses from Godot
+        window.addEventListener('message', (event) => {
+            // Verify the origin for security
+            if (event.origin !== "https://sebuloan.github.io") return;
+            
+            if (event.data.godotResponse) {
+                const response = event.data.godotResponse;
+                if (response.success) {
+                    showStatus(response.message, 'success');
+                } else {
+                    showStatus(response.message, 'error');
+                }
             }
-        };
-    
-        document.getElementById('sendJsonBtn').addEventListener('click', () => {
-            const controllerFrame = document.getElementById('godot-controller-frame');
-            controllerFrame.contentWindow.postMessage(jsonData, 'https://sebuloan.github.io');
-            console.log("Sent JSON to Godot iframe:", jsonData);
         });
+
+        // Button event listeners
+        document.getElementById('disableBtn').addEventListener('click', () => {
+            sendCommandToGodot('disable_cube');
+        });
+
+        document.getElementById('enableBtn').addEventListener('click', () => {
+            sendCommandToGodot('enable_cube');
+        });
+
+        document.getElementById('toggleBtn').addEventListener('click', () => {
+            sendCommandToGodot('toggle_cube');
+        });
+
+        function sendCommandToGodot(command) {
+            const message = {
+                godotCommand: true,
+                type: command,
+                target: "/root/Main/Cube",
+                timestamp: Date.now()
+            };
+            
+            godotFrame.contentWindow.postMessage(message, "https://sebuloan.github.io");
+            showStatus(`Sent command: ${command}`, 'success');
+        }
+
+        function showStatus(message, type) {
+            statusDiv.textContent = message;
+            statusDiv.className = 'status ' + type;
+            setTimeout(() => {
+                statusDiv.textContent = '';
+                statusDiv.className = 'status';
+            }, 3000);
+        }
     </script>
 </body>
 </html>
