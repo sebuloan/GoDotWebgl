@@ -232,15 +232,17 @@ function handleMessage(event) {
 }
 
 window.addEventListener('message', handleMessage, false);
-
 function flushPendingMessages() {
+    console.log("Godot is ready. Flushing messages...");
     if (window.pendingMessages && typeof godot !== 'undefined' && godot.instance) {
         while (window.pendingMessages.length > 0) {
             const msg = window.pendingMessages.shift();
+            console.log("Delivering stored message to Godot:", msg);
             godot.instance.call("/root/Main/MessageReceiver._receive_message", JSON.stringify(msg));
         }
     }
 }
+
 
 // Wait for Godot to be ready
 window.addEventListener("godot-loaded", flushPendingMessages);
