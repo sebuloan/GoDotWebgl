@@ -242,6 +242,23 @@
 				}, displayFailureNotice);
 			}
 		})();
+		  // This runs after the Godot app is loaded
+		  function sendMessageToGodot(message) {
+        if (typeof godot !== 'undefined' && godot && godot.engine) {
+            godot.engine.call('Main', 'handle_message_from_html', message);
+        } else {
+            console.warn("Godot engine is not ready yet.");
+        }
+    }
+
+    // Example usage: disable the cube
+    window.onload = () => {
+        // Wait a moment to be safe (or ideally wait for an init callback)
+        setTimeout(() => {
+            sendMessageToGodot("disable-cube");
+        }, 1000); // delay to allow Godot to load
+    };
+		
 	//]]></script>
 </body>
 </html>
