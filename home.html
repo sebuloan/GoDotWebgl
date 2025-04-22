@@ -1,8 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Godot Control</title>
+    <title>Control Godot from HTML</title>
 </head>
 <body>
     <h1>Control Godot from HTML</h1>
@@ -11,13 +10,11 @@
     <iframe id="godotFrame" src="https://sebuloan.github.io/GoDotWebgl/index.html" width="800" height="600" allow="fullscreen"></iframe>
 
     <script>
-       function disableCube() {
-	const iframe = document.getElementById("godotFrame");
-	console.log("📤 Sending 'disable-cube' to iframe");
-	iframe.contentWindow.postMessage("disable-cube", "*");
-}
-
-        </script>
-        
+        function disableCube() {
+            const iframe = document.getElementById("godotFrame");
+            console.log("📤 Sending 'disable-cube' to Godot iframe");
+            iframe.contentWindow.postMessage("disable-cube", "*");
+        }
+    </script>
 </body>
 </html>
