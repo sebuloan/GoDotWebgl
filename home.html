@@ -13,11 +13,12 @@
   <iframe id="godotFrame" src="https://sebuloan.github.io/GoDotWebgl/index.html" width="800" height="600" allow="fullscreen"></iframe>
 
 <script>
+  const GODOT_ORIGIN = "https://sebuloan.github.io";
+
   function disableCube() {
     const iframe = document.getElementById('godotFrame');
     const data = JSON.stringify({ action: "disableCube" });
-
-    iframe.contentWindow.postMessage(data, "*"); // You can replace "*" with the exact origin for security
+    iframe.contentWindow.postMessage(data, GODOT_ORIGIN);
   }
 </script>
 
