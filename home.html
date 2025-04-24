@@ -7,32 +7,42 @@
     <button onclick="callGodot()">Call Godot Function</button>
     <iframe id="godot-game" src="https://sebuloan.github.io/GoDotWebgl/index.html"></iframe>
 
-    <!-- Add the script here -->
     <script>
-    async function callGodot() {
-        try {
-            const iframe = document.getElementById('godot-game');
-            const godotWindow = iframe.contentWindow;
-
-            // Wait for Godot to load inside the iframe
-            await new Promise(resolve => {
-                if (godotWindow.Engine && godotWindow.Engine.isWebGLLoaded()) {
-                    resolve();
-                } else {
-                    godotWindow.addEventListener('godot-loaded', resolve);
-                }
-            });
-
-            // Get the engine instance from the iframe
-            const engine = await godotWindow.Engine.getInstance();
-            
-            // Call the Godot function
-            const response = await engine.greetFromJs("Web User");
-            alert(response);
-            
-        } catch (error) {
-            console.error("Error calling Godot:", error);
+    let godotReady = false;
+    const GODOT_ORIGIN = 'https://sebuloan.github.io';
+    
+    // Listen for Godot's ready state
+    window.addEventListener('message', (event) => {
+        if (event.origin !== GODOT_ORIGIN) return;
+        
+        if (event.data === 'GODOT_READY') {
+            godotReady = true;
+            console.log("Godot is ready!");
         }
+        
+        if (event.data.action === 'godotResponse') {
+            alert(event.data.result);
+        }
+        
+        if (event.data.action === 'godotError') {
+            console.error("Godot error:", event.data.error);
+            alert("Error: " + event.data.error);
+        }
+    });
+
+    function callGodot() {
+        const iframe = document.getElementById('godot-game');
+        
+        if (!godotReady) {
+            alert("Please wait for Godot to finish loading");
+            return;
+        }
+        
+        iframe.contentWindow.postMessage({
+            action: 'callGodotFunction',
+            functionName: 'greetFromJs',
+            args: ['Web User']
+        }, GODOT_ORIGIN);
     }
     </script>
 </body>
