@@ -92,7 +92,14 @@ body {
 		</style>
 		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
 <link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
+   window.engine?.ready?.then(() => {
+        console.log("✅ Godot Engine is ready (from head_include)");
 
+        // Example: Send message to Godot
+        if (window.engine.call) {
+            window.engine.call("js_message", "disable-cube");
+        }
+    });
 	</head>
 	<body>
 		<canvas id="canvas">
