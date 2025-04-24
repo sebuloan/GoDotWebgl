@@ -1,49 +1,28 @@
+html 
+
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Parent Page with Godot Iframe</title>
+  <meta charset="utf-8">
+  <title>Godot Iframe Message Test</title>
 </head>
 <body>
-    <button onclick="callGodot()">Call Godot Function</button>
-    <iframe id="godot-game" src="https://sebuloan.github.io/GoDotWebgl/index.html"></iframe>
+  <h2>Send message to Godot inside iframe</h2>
 
-    <script>
-    let godotReady = false;
-    const GODOT_ORIGIN = 'https://sebuloan.github.io';
-    
-    // Listen for Godot's ready state
-    window.addEventListener('message', (event) => {
-        if (event.origin !== GODOT_ORIGIN) return;
-        
-        if (event.data === 'GODOT_READY') {
-            godotReady = true;
-            console.log("Godot is ready!");
-        }
-        
-        if (event.data.action === 'godotResponse') {
-            alert(event.data.result);
-        }
-        
-        if (event.data.action === 'godotError') {
-            console.error("Godot error:", event.data.error);
-            alert("Error: " + event.data.error);
-        }
-    });
+  <button onclick="disableCube()">Disable Cube in Godot</button>
+  <br><br>
+  
+  <iframe id="godotFrame" src="https://sebuloan.github.io/GoDotWebgl/index.html" width="800" height="600" allow="fullscreen"></iframe>
 
-    function callGodot() {
-        const iframe = document.getElementById('godot-game');
-        
-        if (!godotReady) {
-            alert("Please wait for Godot to finish loading");
-            return;
-        }
-        
-        iframe.contentWindow.postMessage({
-            action: 'callGodotFunction',
-            functionName: 'greetFromJs',
-            args: ['Web User']
-        }, GODOT_ORIGIN);
-    }
-    </script>
+<script>
+  const GODOT_ORIGIN = "https://sebuloan.github.io";
+
+  function disableCube() {
+    const iframe = document.getElementById('godotFrame');
+    const data = JSON.stringify({ action: "disableCube" });
+    iframe.contentWindow.postMessage(data, GODOT_ORIGIN);
+  }
+</script>
+
 </body>
 </html>
