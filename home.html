@@ -2,25 +2,19 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Godot Iframe Message Test</title>
+  <title>Godot ↔ JS MessageChannel</title>
 </head>
 <body>
-  <h2>Send message to Godot inside iframe</h2>
+  <h3>Channel messaging demo</h3>
+  <p>Message back from Godot: <span class="output">waiting...</span></p>
+  <button id="postIt">Click to post message</button>
+  <br>
+  <iframe id="godotFrame"
+    src="https://triptych.neocities.org/godot_iframe_test001/index.html"
+    width="800" height="520"
+    sandbox="allow-scripts allow-modals allow-popups">
+  </iframe>
 
-  <button onclick="disableCube()">Disable Cube in Godot</button>
-  <br><br>
-  
-  <iframe id="godotFrame" src="https://sebuloan.github.io/GoDotWebgl/index.html" width="800" height="600" allow="fullscreen"></iframe>
-
-
-<script>
-  const GODOT_ORIGIN = "https://sebuloan.github.io";
-
-  function disableCube() {
-    const iframe = document.getElementById('godotFrame');
-    iframe.contentWindow.postMessage("disable-cube", GODOT_ORIGIN);
-  }
-</script>
-</script>
+  <script src="main.js"></script>
 </body>
 </html>
